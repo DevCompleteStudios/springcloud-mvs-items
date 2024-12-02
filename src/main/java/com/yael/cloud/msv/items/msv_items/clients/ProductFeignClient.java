@@ -11,7 +11,7 @@ import com.yael.cloud.msv.items.msv_items.models.Product;
 
 
 
-@FeignClient(url="localhost:8001", name="mvs-products")
+@FeignClient(name="mvs-products")
 public interface ProductFeignClient {
 
     @GetMapping

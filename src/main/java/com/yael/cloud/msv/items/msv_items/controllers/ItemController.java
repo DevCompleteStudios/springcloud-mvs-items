@@ -1,5 +1,6 @@
 package com.yael.cloud.msv.items.msv_items.controllers;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class ItemController {
 
 
     @GetMapping
-    ResponseEntity<?> findAll(){
+    public ResponseEntity<?> findAll(){
         return ResponseEntity.ok(service.findAll());
     }
 
@@ -34,7 +35,7 @@ public class ItemController {
         if(item.isPresent()){
             return ResponseEntity.ok(item.get());
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(404).body(Collections.singletonMap("message", "Not found"));
     }
     
 

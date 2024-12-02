@@ -11,6 +11,8 @@ import com.yael.cloud.msv.items.msv_items.clients.ProductFeignClient;
 import com.yael.cloud.msv.items.msv_items.models.Item;
 import com.yael.cloud.msv.items.msv_items.models.Product;
 
+import feign.FeignException;
+
 
 
 @Service
@@ -31,12 +33,12 @@ public class ItemServiceFeign implements ItemService {
 
     @Override
     public Optional<Item> findById(Long id) {
-        Optional<Product> product = client.findById(id);
-    
-        if(product.isPresent()){
-            return Optional.of(new Item(product.get(), RANDOM.nextInt(1, 9)));
+        try {
+            Optional<Product> product = client.findById(id);
+            return Optional.of(new Item(product.get(), RANDOM.nextInt(1,9)));
+        } catch(FeignException ex) {
+            return Optional.empty();
         }
-        return Optional.empty();
     }
     
 }
