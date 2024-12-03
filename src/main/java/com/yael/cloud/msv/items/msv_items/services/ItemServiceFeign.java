@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.yael.cloud.msv.items.msv_items.clients.ProductFeignClient;
 import com.yael.cloud.msv.items.msv_items.models.Item;
@@ -15,7 +14,7 @@ import feign.FeignException;
 
 
 
-@Service
+
 public class ItemServiceFeign implements ItemService {
 
     @Autowired
