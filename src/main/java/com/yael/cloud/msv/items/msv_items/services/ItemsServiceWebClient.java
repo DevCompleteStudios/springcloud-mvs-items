@@ -41,8 +41,8 @@ public class ItemsServiceWebClient implements ItemService {
     public Optional<Item> findById(Long id) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
-    
-        try {
+
+        // try {
             return Optional.of(
                 client.build().get().uri("/{id}", params)
                 .accept()
@@ -51,9 +51,9 @@ public class ItemsServiceWebClient implements ItemService {
                 .map(p -> new Item(p, new Random().nextInt(1,9)))
                 .block()
             );
-        } catch (WebClientResponseException e) {
-            return Optional.empty();
-        }
+        // } catch (WebClientResponseException e) {
+        //     return Optional.empty();
+        // }
     }
 
 }
