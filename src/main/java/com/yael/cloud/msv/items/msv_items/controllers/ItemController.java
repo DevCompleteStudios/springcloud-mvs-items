@@ -19,6 +19,8 @@ import com.yael.cloud.msv.items.msv_items.models.Item;
 import com.yael.cloud.msv.items.msv_items.models.Product;
 import com.yael.cloud.msv.items.msv_items.services.ItemService;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 
 
 
@@ -43,6 +45,19 @@ public class ItemController {
         return ResponseEntity.ok(service.findAll());
     }
 
+
+    @CircuitBreaker(name="items", fallbackMethod="getFallbackMethodProduct") // nombre de la configuración del corto circuito (application.yml)
+    @GetMapping("/details/{id}")
+    public ResponseEntity<?> detailsfindById(@PathVariable long id) {
+        Optional<Item> item = service.findById(id); // usamos el breaker
+
+        if(item.isPresent()){
+            return ResponseEntity.ok(item.get());
+        }
+        return ResponseEntity.status(404).body(Collections.singletonMap("message", "Not found"));
+    }
+
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable long id) {
         Optional<Item> item = breakerFactory.create("items")
@@ -57,6 +72,14 @@ public class ItemController {
             return ResponseEntity.ok(item.get());
         }
         return ResponseEntity.status(404).body(Collections.singletonMap("message", "Not found"));
+    }
+
+
+    public ResponseEntity<?> getFallbackMethodProduct(Throwable e){
+        logger.info(e.getMessage());
+
+        Item items = new Item(new Product(1L, "", 100.2, LocalDateTime.now()), 5);
+        return ResponseEntity.of(Optional.of(items));
     }
 
 }
