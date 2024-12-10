@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.yael.cloud.msv.items.msv_items.models.Product;
+import com.yael.libs.msv.commons.entities.Product;
+
 
 
 

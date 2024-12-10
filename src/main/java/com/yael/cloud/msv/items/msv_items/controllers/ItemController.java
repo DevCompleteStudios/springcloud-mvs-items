@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yael.cloud.msv.items.msv_items.models.Item;
-import com.yael.cloud.msv.items.msv_items.models.Product;
 import com.yael.cloud.msv.items.msv_items.services.ItemService;
+import com.yael.libs.msv.commons.entities.Product;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;

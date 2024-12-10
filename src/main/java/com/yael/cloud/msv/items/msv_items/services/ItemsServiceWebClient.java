@@ -6,16 +6,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-import org.apache.hc.core5.http.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.yael.cloud.msv.items.msv_items.models.Item;
-import com.yael.cloud.msv.items.msv_items.models.Product;
-
+import com.yael.libs.msv.commons.entities.Product;
 
 
 

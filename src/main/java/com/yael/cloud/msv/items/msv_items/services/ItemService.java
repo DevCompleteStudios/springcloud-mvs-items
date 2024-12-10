@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.yael.cloud.msv.items.msv_items.models.Item;
-import com.yael.cloud.msv.items.msv_items.models.Product;
+import com.yael.libs.msv.commons.entities.Product;
 
 
 

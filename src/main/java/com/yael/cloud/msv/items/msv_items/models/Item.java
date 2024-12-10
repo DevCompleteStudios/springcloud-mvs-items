@@ -1,7 +1,6 @@
 package com.yael.cloud.msv.items.msv_items.models;
 
-
-
+import com.yael.libs.msv.commons.entities.Product;
 
 public class Item {
     private Product product;
