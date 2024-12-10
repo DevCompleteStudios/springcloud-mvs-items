@@ -2,12 +2,18 @@ package com.yael.cloud.msv.items.msv_items.controllers;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,11 +26,12 @@ import com.yael.cloud.msv.items.msv_items.models.Product;
 import com.yael.cloud.msv.items.msv_items.services.ItemService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 
 
 
 
-
+@RefreshScope
 @RestController
 public class ItemController {
 
@@ -34,6 +41,31 @@ public class ItemController {
     @Autowired
     private CircuitBreakerFactory breakerFactory;
     private final Logger logger = LoggerFactory.getLogger(ItemController.class);
+
+    @Value("${configuracion.texto}")
+    private String text;
+
+    @Autowired
+    Environment envs;
+
+
+    @GetMapping("/get/config")
+    public ResponseEntity<?> fetch( @Value("${server.port}") String port ){
+        Map<String, Object> json = new HashMap<>();
+
+        json.put("text", text);
+        json.put("port", port);
+
+        logger.info(port);
+        logger.info(text);
+
+        if(envs.getActiveProfiles().length > 0 && envs.getActiveProfiles()[0].equals("dev")){
+            json.put("autor", envs.getProperty("configuracion.autor.nombre"));
+            json.put("email", envs.getProperty("configuracion.autor.email"));
+        }
+
+        return ResponseEntity.ok(json);
+    }
 
 
     @GetMapping
@@ -55,6 +87,20 @@ public class ItemController {
             return ResponseEntity.ok(item.get());
         }
         return ResponseEntity.status(404).body(Collections.singletonMap("message", "Not found"));
+    }
+
+    @TimeLimiter(name="items") // si no tiene el decorador para el corto circuito nunca entrara
+    @CircuitBreaker(name="items", fallbackMethod="getFallbackMethodProduct")
+    @GetMapping("/details2/{id}")
+    public CompletableFuture<?> details3findById(@PathVariable long id) {
+        return CompletableFuture.supplyAsync(() -> {
+            Optional<Item> item = service.findById(id); // usamos el breaker
+
+            if(item.isPresent()){
+                return ResponseEntity.ok(item.get());
+            }
+            return ResponseEntity.status(404).body(Collections.singletonMap("message", "Not found"));
+        });
     }
 
 
