@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.yael.cloud.msv.items.msv_items.clients.ProductFeignClient;
 import com.yael.cloud.msv.items.msv_items.models.Item;
@@ -14,7 +15,7 @@ import feign.FeignException;
 
 
 
-
+@Service
 public class ItemServiceFeign implements ItemService {
 
     @Autowired
@@ -39,5 +40,20 @@ public class ItemServiceFeign implements ItemService {
             return Optional.empty();
         }
     }
-    
+
+    @Override
+    public Product save(Product product) {
+        return client.create(product);
+    }
+
+    @Override
+    public Product update(Product product, Long id) {
+        return client.update(product, id);
+    }
+
+    @Override
+    public void delete(Long id) {
+        client.delete(id);
+    }
+
 }

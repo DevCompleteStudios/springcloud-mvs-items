@@ -14,11 +14,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yael.cloud.msv.items.msv_items.models.Item;
@@ -126,6 +132,23 @@ public class ItemController {
 
         Item items = new Item(new Product(1L, "", 100.2, LocalDateTime.now()), 5);
         return ResponseEntity.of(Optional.of(items));
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Product create(@RequestBody Product product){
+        return service.save(product);
+    }
+
+    @PutMapping("/{id}")
+    public Product update( @PathVariable Long id, @RequestBody Product product ){
+        return service.update(product, id);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete( @PathVariable Long id ){
+        service.delete(id);
     }
 
 }

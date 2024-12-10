@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import org.apache.hc.core5.http.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,6 @@ import com.yael.cloud.msv.items.msv_items.models.Product;
 
 
 
-@Service
 public class ItemsServiceWebClient implements ItemService {
 
     @Autowired
@@ -54,6 +54,46 @@ public class ItemsServiceWebClient implements ItemService {
         // } catch (WebClientResponseException e) {
         //     return Optional.empty();
         // }
+    }
+
+    @Override
+    public Product save(Product product) {
+        return client.build()
+            .post()
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(product)
+            .retrieve()
+            .bodyToMono( Product.class )
+            .block();
+    }
+
+    @Override
+    public Product update(Product product, Long id) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+
+        return client.build()
+            .put()
+            .uri("/{id}", params)
+            .accept()
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(product)
+            .retrieve()
+            .bodyToMono(Product.class)
+            .block();
+    }
+
+    @Override
+    public void delete(Long id) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+
+        client.build()
+            .delete()
+            .uri("/{id}", params)
+            .retrieve()
+            .bodyToMono(Void.class)
+            .block();
     }
 
 }
